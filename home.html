@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loveflix — Home</title>
+  <meta name="description" content="Browse your private story collection on Loveflix." />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/home.css" />
+</head>
+
+<body class="page-transition">
+
+  <!-- ── Navbar ── -->
+  <nav class="navbar" id="navbar">
+    <div class="navbar-left">
+      <a href="home.html" class="navbar-brand">LOVEFLIX</a>
+      <div class="nav-links">
+        <a href="home.html" class="active">Home</a>
+        <a href="notifications.html">Messages</a>
+      </div>
+    </div>
+
+    <div class="navbar-right">
+      <!-- Search -->
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search stories…" autocomplete="off" />
+      </div>
+
+      <!-- Sort -->
+      <select id="sort-select" aria-label="Sort stories">
+        <option value="default">Default</option>
+        <option value="newest">Newest</option>
+        <option value="oldest">Oldest</option>
+        <option value="title-asc">A → Z</option>
+        <option value="title-desc">Z → A</option>
+      </select>
+
+      <!-- User Menu -->
+      <div class="user-menu" id="user-menu" role="button" tabindex="0" aria-label="User menu">
+        <div class="user-avatar" id="user-initial">?</div>
+        <div class="user-dropdown" id="user-dropdown">
+          <div class="user-email" id="user-email-display"></div>
+          <a href="notifications.html">🔔 Messages</a>
+          <button id="logout-btn">🚪 Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section class="hero" id="hero" style="display:none;">
+    <div class="hero-bg">
+      <img src="" alt="" id="hero-img" />
+    </div>
+    <div class="hero-gradient"></div>
+    <div class="hero-content">
+      <div class="hero-badge" id="hero-badge">✨ Featured</div>
+      <h1 class="hero-title" id="hero-title"></h1>
+      <p class="hero-desc" id="hero-desc"></p>
+      <button class="hero-watch-btn btn btn-primary mt-4">
+        <span class="btn-icon">▶</span> Watch
+      </button>
+    </div>
+  </section>
+
+  <!-- ── Search Results Header ── -->
+  <div class="search-results-header" id="search-header" style="display:none;"></div>
+
+  <!-- ── Content Rows ── -->
+  <main class="content-rows" id="content-rows">
+    <div class="row-section">
+      <div class="row-header">
+        <div class="skeleton" style="width:160px;height:22px;border-radius:6px;"></div>
+      </div>
+      <div class="cards-scroll">
+        <div class="skeleton" style="aspect-ratio:2/3;border-radius:10px;"></div>
+        <div class="skeleton" style="aspect-ratio:2/3;border-radius:10px;"></div>
+        <div class="skeleton" style="aspect-ratio:2/3;border-radius:10px;"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="data/videos.js"></script>
+  <script src="notifications/messages.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/home.js"></script>
+</body>
+
+</html>

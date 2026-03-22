@@ -1,0 +1,284 @@
+/* =============================================
+   LOVEFLEX — Login Page CSS
+   ============================================= */
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ── Background ──────────────────────────────── */
+.login-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.bg-collage {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 4px;
+  opacity: 0.35;
+  transform: scale(1.05);
+}
+
+.bg-collage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.8);
+}
+
+.bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(0,0,0,0.85) 0%,
+    rgba(0,0,0,0.6) 50%,
+    rgba(229,9,20,0.08) 100%
+  );
+}
+
+/* ── Logo (top left) ─────────────────────────── */
+.login-logo {
+  position: relative;
+  z-index: 2;
+  padding: 24px 4%;
+}
+.login-logo .brand {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--accent);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-style: italic;
+}
+
+/* ── Center Container ────────────────────────── */
+.login-center {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: calc(100vh - 80px);
+  padding: 16px;
+}
+
+/* ── Card ────────────────────────────────────── */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-xl);
+  padding: 44px 40px 40px;
+  box-shadow: var(--shadow-lg);
+  animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.login-card.shake {
+  animation: shake 0.5s ease;
+}
+
+.login-card h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+.login-card .subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 32px;
+  line-height: 1.5;
+}
+
+/* ── Form ────────────────────────────────────── */
+.form-group {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.form-group .input-wrap {
+  position: relative;
+}
+
+.form-group .input-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.form-group input {
+  width: 100%;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius-md);
+  padding: 14px 14px 14px 42px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.form-group input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-group input:focus {
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.1);
+}
+
+.form-group .toggle-pw {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: color var(--transition-fast);
+  background: none;
+  border: none;
+}
+.form-group .toggle-pw:hover {
+  color: var(--text-primary);
+}
+
+/* ── Remember row ────────────────────────────── */
+.remember-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+.remember-row input[type=checkbox] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.remember-row label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+/* ── Error message ───────────────────────────── */
+.error-msg {
+  background: var(--accent-soft);
+  border: 1px solid rgba(229,9,20,0.3);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin-bottom: 16px;
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+.error-msg.visible { display: block; }
+
+/* ── Sign In button ──────────────────────────── */
+#login-btn {
+  width: 100%;
+  padding: 15px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  letter-spacing: 0.3px;
+  position: relative;
+  overflow: hidden;
+}
+#login-btn:hover {
+  background: var(--accent-hover);
+  box-shadow: var(--shadow-glow);
+  transform: scale(1.01);
+}
+#login-btn:active { transform: scale(0.99); }
+#login-btn.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+#login-btn .btn-text { transition: opacity 0.2s; }
+#login-btn.loading .btn-text { opacity: 0; }
+#login-btn .btn-spinner {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 22px; height: 22px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+#login-btn.loading .btn-spinner { display: block; }
+
+/* ── Footer note ─────────────────────────────── */
+.login-footer-note {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.login-footer-note span {
+  color: var(--gold);
+}
+
+/* ── Floating blobs ──────────────────────────── */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 1;
+}
+.blob-1 {
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(229,9,20,0.12), transparent 70%);
+  top: -100px; right: -100px;
+  animation: blobFloat 8s ease-in-out infinite;
+}
+.blob-2 {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(245,197,24,0.08), transparent 70%);
+  bottom: -80px; left: -80px;
+  animation: blobFloat 10s ease-in-out infinite reverse;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 480px) {
+  .login-card {
+    padding: 32px 22px 28px;
+    border-radius: var(--radius-lg);
+  }
+  .login-card h1 { font-size: 1.5rem; }
+  .bg-collage { grid-template-columns: repeat(3, 1fr); }
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Story — Loveflix</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/story.css" />
+</head>
+<body>
+
+  <!-- ── Preloader ── -->
+  <div id="preloader">
+    <div class="netflix-spinner"></div>
+  </div>
+
+  <!-- ── Story Viewer ── -->
+  <div id="story-viewer">
+    <div class="frame-gradient-top"></div>
+
+    <div class="story-topbar">
+      <a href="home.html" class="back-btn" title="Back">←</a>
+      <div class="story-title-bar">
+        <h2 id="story-title">Loading…</h2>
+        <span id="story-frame-info"></span>
+      </div>
+    </div>
+
+    <div class="progress-dots" id="progress-dots"></div>
+    <div class="frame-container" id="frame-container"></div>
+    <div class="frame-gradient-bottom"></div>
+
+    <div class="story-controls">
+      <button class="ctrl-btn" id="prev-btn" title="Previous (←)" aria-label="Previous frame">‹</button>
+      <button class="ctrl-btn play-pause" id="play-pause-btn" title="Play/Pause (P)" aria-label="Play or Pause">⏸</button>
+      <button class="ctrl-btn" id="next-btn" title="Next (→)" aria-label="Next frame">›</button>
+      <span class="frame-counter" id="frame-counter">1 / 1</span>
+    </div>
+  </div>
+
+  <script src="data/videos.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/story.js"></script>
+</body>
+</html>

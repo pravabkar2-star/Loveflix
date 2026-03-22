@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loveflix — Sign In</title>
+  <meta name="description" content="Sign in to Loveflix — your private story cinema." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/login.css" />
+</head>
+<body>
+
+  <!-- Blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- Background Collage -->
+  <div class="login-bg">
+    <div class="bg-collage" id="bg-collage"></div>
+    <div class="bg-overlay"></div>
+  </div>
+
+  <!-- Top Logo -->
+  <div class="login-logo">
+    <div class="brand">LOVEFLIX</div>
+  </div>
+
+  <!-- Center Card -->
+  <div class="login-center">
+    <div class="login-card" id="login-card">
+      <h1>Sign In</h1>
+      <p class="subtitle">Your private story cinema awaits.</p>
+
+      <div class="error-msg" id="error-msg" role="alert"></div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-wrap">
+          <span class="input-icon">✉️</span>
+          <input
+            type="email"
+            id="email"
+            placeholder="your@email.com"
+            autocomplete="email"
+            autofocus
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input
+            type="password"
+            id="password"
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+          <button class="toggle-pw" id="toggle-pw" aria-label="Toggle password visibility" type="button">👁️</button>
+        </div>
+      </div>
+
+      <button id="login-btn" type="button">
+        <span class="btn-text">Sign In</span>
+        <div class="btn-spinner"></div>
+      </button>
+
+      <p class="login-footer-note">Made with <span>♥</span> just for you.</p>
+    </div>
+  </div>
+
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    // Redirect if already logged in
+    redirectIfLoggedIn();
+
+    // Fill background collage with thumbnails
+    (async () => {
+      try {
+        const videos = await fetchJSON("data/videos.json");
+        const collage = document.getElementById("bg-collage");
+        let thumbs = [...videos];
+        // repeat to fill grid
+        while (thumbs.length < 15) thumbs = [...thumbs, ...videos];
+        thumbs.slice(0, 15).forEach(v => {
+          const img = document.createElement("img");
+          img.src = v.thumbnail;
+          img.alt = v.title;
+          img.loading = "lazy";
+          collage.appendChild(img);
+        });
+      } catch { /* collage is decorative */ }
+    })();
+
+    // Toggle password visibility
+    const pwInput  = document.getElementById("password");
+    const togglePw = document.getElementById("toggle-pw");
+    togglePw.addEventListener("click", () => {
+      if (pwInput.type === "password") {
+        pwInput.type = "text";
+        togglePw.textContent = "🙈";
+      } else {
+        pwInput.type = "password";
+        togglePw.textContent = "👁️";
+      }
+    });
+
+    // Login handler
+    const loginBtn  = document.getElementById("login-btn");
+    const errorMsg  = document.getElementById("error-msg");
+    const loginCard = document.getElementById("login-card");
+
+    function showError(msg) {
+      errorMsg.textContent = msg;
+      errorMsg.classList.add("visible");
+      loginCard.classList.remove("shake");
+      void loginCard.offsetWidth;
+      loginCard.classList.add("shake");
+      setTimeout(() => loginCard.classList.remove("shake"), 600);
+    }
+
+    function clearError() {
+      errorMsg.classList.remove("visible");
+    }
+
+    async function handleLogin() {
+      const email    = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      clearError();
+
+      if (!email)    { showError("Please enter your email.");    return; }
+      if (!password) { showError("Please enter your password."); return; }
+
+      loginBtn.classList.add("loading");
+
+      // Small delay for feel
+      await new Promise(r => setTimeout(r, 600));
+
+      const result = login(email, password);
+      if (result.success) {
+        loginBtn.querySelector(".btn-text").textContent = "✓ Welcome!";
+        await new Promise(r => setTimeout(r, 300));
+        window.location.replace("home.html");
+      } else {
+        loginBtn.classList.remove("loading");
+        showError(result.message);
+      }
+    }
+
+    loginBtn.addEventListener("click", handleLogin);
+    document.addEventListener("keydown", e => { if (e.key === "Enter") handleLogin(); });
+  </script>
+</body>
+</html>
