@@ -4,9 +4,8 @@
 // =============================================
 
 const USERS = [
-  { email: "love@loveflix.com",  password: "forever2024" },
-  { email: "her@loveflix.com",   password: "myprincess"  },
-  { email: "admin@loveflix.com", password: "admin123"    },
+  { email: "kittu@loveflix.com", password: "Pravab's Wife" },
+  { email: "kittu", password: "Pravab's Wife" },
 ];
 
 const SESSION_KEY = "loveflix_user";

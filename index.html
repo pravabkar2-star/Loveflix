@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Loveflix — Sign In</title>
   <meta name="description" content="Sign in to Loveflix — your private story cinema." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>" />
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>" />
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/login.css" />
 </head>
+
 <body>
 
   <!-- Blobs -->
@@ -35,16 +38,10 @@
       <div class="error-msg" id="error-msg" role="alert"></div>
 
       <div class="form-group">
-        <label for="email">Email</label>
+        <label for="username">Username/Email</label>
         <div class="input-wrap">
-          <span class="input-icon">✉️</span>
-          <input
-            type="email"
-            id="email"
-            placeholder="your@email.com"
-            autocomplete="email"
-            autofocus
-          />
+          <span class="input-icon">😃</span>
+          <input type="text" id="username" placeholder="your username" autocomplete="username" autofocus />
         </div>
       </div>
 
@@ -52,12 +49,7 @@
         <label for="password">Password</label>
         <div class="input-wrap">
           <span class="input-icon">🔒</span>
-          <input
-            type="password"
-            id="password"
-            placeholder="••••••••"
-            autocomplete="current-password"
-          />
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" />
           <button class="toggle-pw" id="toggle-pw" aria-label="Toggle password visibility" type="button">👁️</button>
         </div>
       </div>
@@ -67,7 +59,7 @@
         <div class="btn-spinner"></div>
       </button>
 
-      <p class="login-footer-note">Made with <span>♥</span> just for you.</p>
+      <p class="login-footer-note">Made with <span>❤️</span> just for you.</p>
     </div>
   </div>
 
@@ -96,7 +88,7 @@
     })();
 
     // Toggle password visibility
-    const pwInput  = document.getElementById("password");
+    const pwInput = document.getElementById("password");
     const togglePw = document.getElementById("toggle-pw");
     togglePw.addEventListener("click", () => {
       if (pwInput.type === "password") {
@@ -109,8 +101,8 @@
     });
 
     // Login handler
-    const loginBtn  = document.getElementById("login-btn");
-    const errorMsg  = document.getElementById("error-msg");
+    const loginBtn = document.getElementById("login-btn");
+    const errorMsg = document.getElementById("error-msg");
     const loginCard = document.getElementById("login-card");
 
     function showError(msg) {
@@ -127,12 +119,12 @@
     }
 
     async function handleLogin() {
-      const email    = document.getElementById("email").value.trim();
+      const email = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value;
 
       clearError();
 
-      if (!email)    { showError("Please enter your email.");    return; }
+      if (!email) { showError("Please enter your username."); return; }
       if (!password) { showError("Please enter your password."); return; }
 
       loginBtn.classList.add("loading");
@@ -155,4 +147,5 @@
     document.addEventListener("keydown", e => { if (e.key === "Enter") handleLogin(); });
   </script>
 </body>
+
 </html>

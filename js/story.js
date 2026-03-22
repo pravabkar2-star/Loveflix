@@ -114,6 +114,24 @@ function updatePreloader(pct, text) {
 function buildFrames() {
   const container = document.getElementById("frame-container");
   container.querySelectorAll(".story-frame").forEach(el => el.remove());
+
+  // Inject slow zoom style for UX
+  if (!document.getElementById("slow-zoom-style")) {
+    const style = document.createElement("style");
+    style.id = "slow-zoom-style";
+    style.innerHTML = `
+      @keyframes slowImageZoom {
+        0% { transform: scale(1); }
+        100% { transform: scale(1.15); }
+      }
+      .story-frame.active img {
+        animation: slowImageZoom 15s linear forwards;
+        transform-origin: center center;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   frames.forEach((f, i) => {
     const div = document.createElement("div");
     div.className = "story-frame";
@@ -121,7 +139,7 @@ function buildFrames() {
     div.innerHTML = `
       <img src="${escapeHTML(f.image)}" alt="Frame ${i + 1}" />
       <div class="frame-label" id="label-${i}">
-        <p>${escapeHTML(f.label || "")}</p>
+        <p>${escapeHTML(f.label || f.subtitle || "")}</p>
       </div>`;
     container.appendChild(div);
   });

@@ -2,9 +2,9 @@
 //  LOVEFLIX — Home Page JS
 // =============================================
 
-let allVideos    = [];
+let allVideos = [];
 let currentQuery = "";
-let currentSort  = "default";
+let currentSort = "default";
 
 // ── Init ────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", () => {
@@ -41,26 +41,55 @@ function loadVideos() {
     return;
   }
 
-  renderHero(allVideos[0]);
+  renderHero(allVideos);
   renderRows(allVideos);
 }
 
 // ── Hero Banner ──────────────────────────────────
-function renderHero(video) {
+let heroVideos = [];
+let currentHeroIndex = 0;
+let heroInterval = null;
+
+function renderHero(videos) {
+  heroVideos = [...videos].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+  if (heroVideos.length === 0) return;
+
+  updateHeroDisplay();
+
+  if (heroVideos.length > 1) {
+    if (heroInterval) clearInterval(heroInterval);
+    heroInterval = setInterval(() => {
+      currentHeroIndex = (currentHeroIndex + 1) % heroVideos.length;
+      updateHeroDisplay();
+    }, 5000);
+  }
+}
+
+function updateHeroDisplay() {
+  const video = heroVideos[currentHeroIndex];
   if (!video) return;
   const hero = document.getElementById("hero");
-  hero.querySelector(".hero-bg img").src     = video.thumbnail;
-  hero.querySelector(".hero-bg img").alt     = video.title;
-  hero.querySelector(".hero-badge").textContent = "✨ " + (video.category || "Featured");
-  hero.querySelector(".hero-title").textContent = video.title;
-  hero.querySelector(".hero-desc").textContent  = video.description || "";
-  hero.querySelector(".hero-watch-btn").onclick = () => openStory(video.id);
-  hero.style.display = "block";
+  const img = hero.querySelector(".hero-bg img");
+
+  img.style.transition = "opacity 0.3s ease";
+  img.style.opacity = "0.5";
+
+  setTimeout(() => {
+    img.src = video.thumbnail;
+    img.alt = video.title;
+    img.style.opacity = "1";
+
+    hero.querySelector(".hero-badge").textContent = "✨ " + (video.category || "Featured");
+    hero.querySelector(".hero-title").textContent = video.title;
+    hero.querySelector(".hero-desc").textContent = video.description || "";
+    hero.querySelector(".hero-watch-btn").onclick = () => openStory(video.id);
+    hero.style.display = "block";
+  }, 300);
 }
 
 // ── Render Rows ──────────────────────────────────
 function renderRows(videos, searchMode = false) {
-  const container    = document.getElementById("content-rows");
+  const container = document.getElementById("content-rows");
   const searchHeader = document.getElementById("search-header");
   container.innerHTML = "";
 
@@ -151,10 +180,13 @@ function setupSearch() {
 
 // ── Sort ─────────────────────────────────────────
 function setupSort() {
-  document.getElementById("sort-select").addEventListener("change", (e) => {
-    currentSort = e.target.value;
-    applyFilters();
-  });
+  const sortSelect = document.getElementById("sort-select");
+  if (sortSelect) {
+    sortSelect.addEventListener("change", (e) => {
+      currentSort = e.target.value;
+      applyFilters();
+    });
+  }
 }
 
 function applyFilters() {
@@ -169,10 +201,10 @@ function applyFilters() {
   }
 
   switch (currentSort) {
-    case "title-asc":  videos.sort((a,b) => a.title.localeCompare(b.title)); break;
-    case "title-desc": videos.sort((a,b) => b.title.localeCompare(a.title)); break;
-    case "newest":     videos.sort((a,b) => new Date(b.date) - new Date(a.date)); break;
-    case "oldest":     videos.sort((a,b) => new Date(a.date) - new Date(b.date)); break;
+    case "title-asc": videos.sort((a, b) => a.title.localeCompare(b.title)); break;
+    case "title-desc": videos.sort((a, b) => b.title.localeCompare(a.title)); break;
+    case "newest": videos.sort((a, b) => new Date(b.date) - new Date(a.date)); break;
+    case "oldest": videos.sort((a, b) => new Date(a.date) - new Date(b.date)); break;
   }
 
   const searchActive = !!currentQuery || currentSort !== "default";
@@ -190,8 +222,8 @@ function setupNavbar() {
 
 // ── User Dropdown ────────────────────────────────
 function setupUserMenu() {
-  const menu      = document.getElementById("user-menu");
-  const dropdown  = document.getElementById("user-dropdown");
+  const menu = document.getElementById("user-menu");
+  const dropdown = document.getElementById("user-dropdown");
   const logoutBtn = document.getElementById("logout-btn");
 
   menu.addEventListener("click", (e) => { e.stopPropagation(); dropdown.classList.toggle("open"); });
