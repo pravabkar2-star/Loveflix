@@ -7,7 +7,29 @@ let currentFrame = 0;
 let isPlaying    = true;
 let autoTimer    = null;
 let autoInterval = null;
+let musicEl      = null;
 const FRAME_DURATION = 5000; // ms per frame
+
+// ── Helpers ─────────────────────────────────────
+function updateMusicIcon() {
+  const musicToggleBtn = document.getElementById("music-toggle-btn");
+  const musicAudio = document.getElementById("bg-music");
+  if (!musicAudio || !musicToggleBtn) return;
+  
+  // Show muted if audio is paused (possibly blocked by autoplay) or manually muted
+  if (musicAudio.paused || musicAudio.muted || musicAudio.volume === 0) {
+    musicToggleBtn.textContent = "🔇";
+  } else if (musicAudio.volume < 0.5) {
+    musicToggleBtn.textContent = "🔉";
+  } else {
+    musicToggleBtn.textContent = "🔊";
+  }
+}
+
+function updatePlayBtn() {
+  const btn = document.getElementById("play-pause-btn");
+  if (btn) btn.textContent = isPlaying ? "⏸" : "▶";
+}
 
 // ── Init ────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", async () => {
@@ -43,7 +65,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("story-frame-info").textContent = `${frames.length} frame${frames.length !== 1 ? "s" : ""}`;
     document.title = entry.title + " — Loveflix";
 
-    // 4) Preload all images
+    // 4) Background Music Init
+    const musicBtnWrap = document.getElementById("music-controls");
+    if (story.music) {
+      musicEl = document.getElementById("bg-music");
+      if (musicEl && musicBtnWrap) {
+        musicEl.src = story.music;
+        musicEl.volume = 0.5; 
+        musicEl.muted = false; // Ensure it's not muted
+        musicBtnWrap.style.display = "flex";
+        
+        // Handle loading errors (e.g. 404)
+        musicEl.onerror = () => {
+          console.error("Audio failed to load:", story.music);
+          musicBtnWrap.style.display = "none";
+        };
+
+        // Autoplay music (many browsers block this, so we'll try on first interaction)
+        const startMusic = () => {
+          if (musicEl.paused) {
+            musicEl.play().then(() => {
+              updateMusicIcon(); // Update icon once playing
+            }).catch(e => console.log("Autoplay still blocked"));
+          }
+          document.removeEventListener("click", startMusic);
+          document.removeEventListener("keydown", startMusic);
+        };
+        document.addEventListener("click", startMusic);
+        document.addEventListener("keydown", startMusic);
+        
+        // Dynamic listeners for reactive UI
+        musicEl.onplay = musicEl.onpause = musicEl.onvolumechange = () => {
+          updateMusicIcon();
+        };
+
+        // Initial icon update
+        updateMusicIcon();
+      }
+    } else if (musicBtnWrap) {
+      musicBtnWrap.style.display = "none";
+    }
+
+    // 5) Preload all images
     updatePreloader(0, "Downloading images…");
     const imageUrls = frames.map(f => f.image);
     let loaded = 0;
@@ -76,6 +139,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.getElementById("story-viewer").classList.add("ready");
       showFrame(0);
       startAutoPlay();
+      // Try to play music immediately (might succeed if user interacted recently)
+      if (musicEl && story.music) {
+        musicEl.play().catch(() => console.log("Initial autoplay blocked"));
+      }
     }, 300);
 
   } catch (err) {
@@ -216,7 +283,13 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("play-pause-btn").addEventListener("click", () => {
     isPlaying = !isPlaying;
     updatePlayBtn();
-    if (isPlaying) { startAutoPlay(); } else { stopAutoPlay(); }
+    if (isPlaying) {
+      startAutoPlay();
+      if (musicEl && !musicEl.muted) musicEl.play();
+    } else {
+      stopAutoPlay();
+      if (musicEl) musicEl.pause();
+    }
   });
 
   document.getElementById("prev-btn").addEventListener("click", () => {
@@ -240,9 +313,42 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.clientX > mid) { document.getElementById("next-btn").click(); }
     else                  { document.getElementById("prev-btn").click(); }
   });
-});
 
-function updatePlayBtn() {
-  const btn = document.getElementById("play-pause-btn");
-  if (btn) btn.textContent = isPlaying ? "⏸" : "▶";
-}
+  // ── Music Controls Logic ────────────────────────
+  const musicToggleBtn = document.getElementById("music-toggle-btn");
+  const volumeSlider = document.getElementById("volume-slider");
+
+  if (!musicEl) musicEl = document.getElementById("bg-music");
+
+  if (musicToggleBtn && musicEl) {
+    musicToggleBtn.addEventListener("click", () => {
+      if (musicEl.paused) {
+        musicEl.play().then(() => {
+          musicEl.muted = false;
+          updateMusicIcon();
+        });
+      } else {
+        musicEl.muted = !musicEl.muted;
+        updateMusicIcon();
+      }
+    });
+  }
+
+  if (volumeSlider && musicEl) {
+    volumeSlider.addEventListener("input", (e) => {
+      musicEl.volume = e.target.value;
+      if (musicEl.volume > 0) {
+        musicEl.muted = false;
+      } else {
+        musicEl.muted = true;
+      }
+      updateMusicIcon();
+    });
+  }
+
+  document.addEventListener("keydown", e => {
+    if (e.key.toLowerCase() === "m") {
+      musicToggleBtn?.click();
+    }
+  });
+});

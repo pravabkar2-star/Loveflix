@@ -35,8 +35,19 @@
       <button class="ctrl-btn" id="prev-btn" title="Previous (←)" aria-label="Previous frame">‹</button>
       <button class="ctrl-btn play-pause" id="play-pause-btn" title="Play/Pause (P)" aria-label="Play or Pause">⏸</button>
       <button class="ctrl-btn" id="next-btn" title="Next (→)" aria-label="Next frame">›</button>
+      
+      <div class="music-controls" id="music-controls" style="display: none;">
+        <button class="ctrl-btn" id="music-toggle-btn" title="Mute/Unmute (M)" aria-label="Mute or Unmute">🔊</button>
+        <div class="volume-popover">
+          <input type="range" id="volume-slider" min="0" max="1" step="0.05" value="0.5">
+        </div>
+      </div>
+
       <span class="frame-counter" id="frame-counter">1 / 1</span>
     </div>
+    
+    <!-- Audio element for background music -->
+    <audio id="bg-music" loop></audio>
   </div>
 
   <script src="data/videos.js"></script>

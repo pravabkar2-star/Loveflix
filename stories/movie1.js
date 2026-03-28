@@ -3,6 +3,7 @@ window.LF_STORIES["movie1"] = {
   "theme": "Love Bears",
   "title": "Getting You Was A Dream Come True",
   "style": "Love Bears style. A brown man bear and a white girl bear.",
+  "music": "Assets/music/love_theme.mp3",
   "frames": [
     {
       "id": 1,
