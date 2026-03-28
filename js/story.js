@@ -9,6 +9,8 @@ let autoTimer    = null;
 let autoInterval = null;
 let musicEl      = null;
 const FRAME_DURATION = 5000; // ms per frame
+let accumulatedTime = 0;   // Track elapsed time for the current frame
+let lastStartTime   = 0;   // Track when the frame started/resumed
 
 // ── Helpers ─────────────────────────────────────
 function updateMusicIcon() {
@@ -29,6 +31,16 @@ function updateMusicIcon() {
 function updatePlayBtn() {
   const btn = document.getElementById("play-pause-btn");
   if (btn) btn.textContent = isPlaying ? "⏸" : "▶";
+
+  // Toggle paused class on the viewer to pause CSS animations (like zoom)
+  const viewer = document.getElementById("story-viewer");
+  if (viewer) {
+    if (isPlaying) {
+      viewer.classList.remove("paused");
+    } else {
+      viewer.classList.add("paused");
+    }
+  }
 }
 
 // ── Init ────────────────────────────────────────
@@ -195,6 +207,9 @@ function buildFrames() {
         animation: slowImageZoom 15s linear forwards;
         transform-origin: center center;
       }
+      #story-viewer.paused .story-frame.active img {
+        animation-play-state: paused;
+      }
     `;
     document.head.appendChild(style);
   }
@@ -244,22 +259,28 @@ function showFrame(index) {
   }
 
   document.getElementById("frame-counter").textContent = `${index + 1} / ${frames.length}`;
-  currentFrame = index;
+  currentFrame    = index;
+  accumulatedTime = 0; // Reset progress for the new frame
 }
 
 // ── Auto-play ────────────────────────────────────
 function startAutoPlay() {
   stopAutoPlay();
   if (!isPlaying) return;
-  const fill      = document.getElementById(`dot-fill-${currentFrame}`);
-  const startTime = Date.now();
+
+  const fill = document.getElementById(`dot-fill-${currentFrame}`);
+  lastStartTime = Date.now();
+  const remainingTime = Math.max(0, FRAME_DURATION - accumulatedTime);
 
   autoInterval = setInterval(() => {
-    const pct = Math.min(((Date.now() - startTime) / FRAME_DURATION) * 100, 100);
+    const elapsed = (Date.now() - lastStartTime) + accumulatedTime;
+    const pct = Math.min((elapsed / FRAME_DURATION) * 100, 100);
     if (fill) fill.style.width = pct + "%";
   }, 50);
 
   autoTimer = setTimeout(() => {
+    accumulatedTime = 0;
+    lastStartTime   = 0; 
     if (currentFrame < frames.length - 1) {
       showFrame(currentFrame + 1);
       startAutoPlay();
@@ -268,10 +289,15 @@ function startAutoPlay() {
       isPlaying = false;
       updatePlayBtn();
     }
-  }, FRAME_DURATION);
+  }, remainingTime);
 }
 
 function stopAutoPlay() {
+  // If we were playing, track how much time has passed to resume properly
+  if (lastStartTime > 0) {
+    accumulatedTime += (Date.now() - lastStartTime);
+    lastStartTime = 0;
+  }
   clearTimeout(autoTimer);
   clearInterval(autoInterval);
   autoTimer = null;
@@ -303,15 +329,17 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   document.addEventListener("keydown", e => {
-    if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); document.getElementById("next-btn").click(); }
-    if (e.key === "ArrowLeft")                    { e.preventDefault(); document.getElementById("prev-btn").click(); }
-    if (e.key === "p" || e.key === "P")           { document.getElementById("play-pause-btn").click(); }
+    if (e.key === "ArrowRight")         { e.preventDefault(); document.getElementById("next-btn").click(); }
+    if (e.key === "ArrowLeft")          { e.preventDefault(); document.getElementById("prev-btn").click(); }
+    if (e.key === "p" || e.key === "P" || e.key === " ") { 
+      e.preventDefault(); 
+      document.getElementById("play-pause-btn").click(); 
+    }
   });
 
-  document.getElementById("frame-container").addEventListener("click", (e) => {
-    const mid = window.innerWidth / 2;
-    if (e.clientX > mid) { document.getElementById("next-btn").click(); }
-    else                  { document.getElementById("prev-btn").click(); }
+  document.getElementById("frame-container").addEventListener("click", () => {
+    // Instead of navigating, toggle the playback state
+    document.getElementById("play-pause-btn").click();
   });
 
   // ── Music Controls Logic ────────────────────────
