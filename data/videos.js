@@ -4,6 +4,17 @@
 
 window.LF_VIDEOS = [
   {
+    "id": "video_202607012024",
+    "title": "Happy Birthday, My Love",
+    "thumbnail": "Assets/movie3/img7.jpeg",
+    "description": "A beautiful story of Milk and Mocha Bears for a magical birthday.",
+    "category": "Love Story",
+    "storyKey": "video_202607012024",
+    "storyScript": "stories/video_202607012024.js",
+    "music": "Assets/music/background1.m4a",
+    "date": "2026-07-01"
+  },
+  {
     "id": "movie2",
     "title": "Tuan Goes On A Trip",
     "thumbnail": "Assets/movie2/07.jpeg",
